@@ -13,7 +13,7 @@ function fixture() {
   mkdirSync(artifactDir);
   const config:LedgerConfig={dbPath:join(root,"test.db"),artifactDir,dispatcherToken:dispatcher,readToken:reader,port:0,host:"127.0.0.1",heartbeatTtlMs:1,maxArtifactBytes:1048576};
   let app=buildApp(config);
-  const post=(body:unknown,token=dispatcher)=>app.inject({method:"POST",url:"/v1/events",headers:{authorization:"Bearer "+token},payload:body});
+  const post=(body:unknown,token=dispatcher)=>app.inject({method:"POST",url:"/v1/events",headers:{authorization:"Bearer "+token,"content-type":"application/json"},payload:JSON.stringify(body)});
   const get=(url:string,token=reader)=>app.inject({method:"GET",url,headers:{authorization:"Bearer "+token}});
   const close=async()=>{await app.close();rmSync(root,{recursive:true,force:true});};
   return {config,get,post,close,app,replaceApp:async()=>{await app.close();app=buildApp(config);return app;}};
@@ -38,7 +38,7 @@ test("happy path persists run, attempt, events and survives restart",async()=>{
   const r=await ctx.get("/v1/runs/"+encodeURIComponent(run));assert.equal(r.statusCode,200);
   assert.equal(r.json().status,"completed");assert.equal(r.json().attempts[0].status,"succeeded");
   assert.equal(r.json().attempts[0].phase,"qa");
-  assert.equal((await ctx.get("/v1/events?run_id="+encodeURIComponent(run))).json().events.length,5);
+  assert.equal((await ctx.get("/v1/events?run_id="+encodeURIComponent(run))).json().events.length,6);
   await ctx.replaceApp();
   const restarted=await ctx.get("/v1/runs/"+encodeURIComponent(run));
   assert.equal(restarted.json().status,"completed");
