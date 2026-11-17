@@ -1,0 +1,8 @@
+{
+  "git": "git version 2.55.0.windows.5",
+  "branch": "feat/execution-ledger-v1",
+  "os": "Microsoft Windows NT 10.0.26100.0",
+  "powershell": "7.6.9",
+  "architecture": "X64",
+  "base_commit": "0e53a8312eecbe023c73088fb7317b62fb0208e9"
+}

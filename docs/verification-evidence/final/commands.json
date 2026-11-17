@@ -1,0 +1,68 @@
+[
+  {
+    "exit_code": 0,
+    "finished_at": "2026-11-17T21:26:51.630671Z",
+    "command": "node --version",
+    "log": "C:\\Dev\\Personal\\Multi-agent-flow\\docs\\verification-evidence\\final\\node-version.txt"
+  },
+  {
+    "exit_code": 0,
+    "finished_at": "2026-11-17T21:26:53.5521932Z",
+    "command": "npm.cmd --version",
+    "log": "C:\\Dev\\Personal\\Multi-agent-flow\\docs\\verification-evidence\\final\\npm-version.txt"
+  },
+  {
+    "exit_code": 0,
+    "finished_at": "2026-11-17T21:27:43.4073739Z",
+    "command": "npm.cmd ci",
+    "log": "C:\\Dev\\Personal\\Multi-agent-flow\\docs\\verification-evidence\\final\\clean-install.txt"
+  },
+  {
+    "exit_code": 0,
+    "finished_at": "2026-11-17T21:27:48.6612045Z",
+    "command": "npm.cmd run build",
+    "log": "C:\\Dev\\Personal\\Multi-agent-flow\\docs\\verification-evidence\\final\\build.txt"
+  },
+  {
+    "exit_code": 0,
+    "finished_at": "2026-11-17T21:28:21.5972364Z",
+    "command": "npm.cmd test",
+    "log": "C:\\Dev\\Personal\\Multi-agent-flow\\docs\\verification-evidence\\final\\tests.txt"
+  },
+  {
+    "exit_code": 0,
+    "finished_at": "2026-11-17T21:28:23.2136435Z",
+    "command": "npm.cmd audit",
+    "log": "C:\\Dev\\Personal\\Multi-agent-flow\\docs\\verification-evidence\\final\\audit.txt"
+  },
+  {
+    "exit_code": 0,
+    "finished_at": "2026-11-17T21:28:28.949477Z",
+    "command": "node scripts/verify-standalone.mjs docs/verification-evidence/final/standalone",
+    "log": "C:\\Dev\\Personal\\Multi-agent-flow\\docs\\verification-evidence\\final\\standalone.txt"
+  },
+  {
+    "exit_code": 0,
+    "finished_at": "2026-11-17T21:28:53.2119958Z",
+    "command": "node --import tsx scripts/verify-browser.mjs",
+    "log": "C:\\Dev\\Personal\\Multi-agent-flow\\docs\\verification-evidence\\final\\browser.txt"
+  },
+  {
+    "exit_code": 0,
+    "finished_at": "2026-11-17T21:28:53.2721676Z",
+    "command": "git diff --check",
+    "log": "C:\\Dev\\Personal\\Multi-agent-flow\\docs\\verification-evidence\\final\\diff-check.txt"
+  },
+  {
+    "exit_code": 0,
+    "log": "docs/verification-evidence/final/standalone.txt",
+    "finished_at": "2026-11-17T21:41:38.8816333Z",
+    "command": "node scripts/verify-standalone.mjs docs/verification-evidence/final/standalone (expanded SQL timestamp/hash audit)"
+  },
+  {
+    "finished_at": "2026-11-17T21:46:09.5280040Z",
+    "log": "docs/verification-evidence/final/diff-check.txt",
+    "exit_code": 0,
+    "command": "git diff --cached --check"
+  }
+]

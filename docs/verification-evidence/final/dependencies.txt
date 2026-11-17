@@ -1,0 +1,8 @@
+multi-agent-flow-ledger@0.1.0 C:\Dev\Personal\Multi-agent-flow
+├── @types/better-sqlite3@7.6.13
+├── @types/node@22.20.5
+├── better-sqlite3@11.10.0
+├── fastify@5.12.8
+├── tsx@4.23.15
+├── typescript@5.9.3
+└── zod@4.6.7

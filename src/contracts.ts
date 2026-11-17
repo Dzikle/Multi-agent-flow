@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const id = z.string().min(1).max(200).regex(/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/);
 const isoTime = z.string().datetime({ offset: true });
-const data = z.record(z.unknown()).default({});
+const data = z.record(z.string(), z.unknown()).default({});
 
 export const eventSchema = z.object({
   event_id: id,

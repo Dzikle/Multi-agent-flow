@@ -19,7 +19,7 @@ A small standalone, provider-neutral service for **observing agent executions**,
 - [Verification plan](docs/verification.md)
 - [Local build, smoke requests and PowerShell guide](docs/quickstart.md)
 
-## Proposed stack
+## Stack
 TypeScript, Node.js LTS, Fastify, Zod, better-sqlite3, SQLite WAL, parameterized SQL (no ORM), gzip-compressed JSONL artifacts, a plain read-only HTML/JS status page.
 
 ## Build and run
@@ -41,3 +41,7 @@ Set unique LEDGER_DISPATCHER_TOKEN and LEDGER_READ_TOKEN environment variables (
 4. Only then integrate into the existing multi-agent dispatcher and specialist wrappers.
 
 **Safety:** no live secrets, prompts or raw private sessions should be uploaded until authorization, redaction, backups and retention have been tested.
+
+## Standalone verification
+
+See [the independent verification report](docs/verification-report.md) for build, real HTTP, CLI, SQLite, restart and actual browser evidence, and [integration readiness](docs/integration-readiness.md) for the next phase's boundaries and limitations. The dispatcher and specialist wrappers are not integrated by this work.

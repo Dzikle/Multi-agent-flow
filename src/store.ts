@@ -44,6 +44,7 @@ export class LedgerStore {
   close(): void { this.db.close(); }
 
   recordEvent(event: EventInput) {
+    if (/^(usage|artifact):/.test(event.event_id)) throw new LedgerError("VALIDATION", "Event ID prefix is reserved for ledger-generated evidence");
     const canonical = stable(event);
     const digest = hash(canonical);
     return this.db.transaction(() => {
@@ -72,7 +73,8 @@ export class LedgerStore {
           const repository = requiredString(w.repository, "work_item.repository");
           const externalId = requiredString(w.external_id, "work_item.external_id");
           const title = optionalString(w.title, "work_item.title");
-          const workId = hash(source + "\n" + repository + "\n" + externalId).slice(0, 32);
+          const existingWork = this.db.prepare("SELECT id FROM work_items WHERE source=? AND repository=? AND external_id=?").get(source, repository, externalId) as Row | undefined;
+          const workId = existingWork?.id ?? hash(stable([source, repository, externalId])).slice(0, 32);
           if (this.db.prepare("SELECT 1 FROM runs WHERE id=?").get(runId)) throw new LedgerError("CONFLICT", "Run ID already exists", 409);
           this.db.prepare("INSERT INTO work_items(id,source,repository,external_id,title,created_at,updated_at) VALUES (?,?,?,?,?,?,?) ON CONFLICT(source,repository,external_id) DO UPDATE SET title=COALESCE(excluded.title,work_items.title),updated_at=excluded.updated_at")
             .run(workId, source, repository, externalId, title, at, at);
@@ -114,7 +116,6 @@ export class LedgerStore {
           if (this.db.prepare("SELECT 1 FROM attempts WHERE id=?").get(attemptId)) throw new LedgerError("CONFLICT", "Attempt ID already exists", 409);
           this.db.prepare("INSERT INTO attempts(id,run_id,parent_attempt_id,role,provider,model,host,phase,status,started_at,last_heartbeat_at,updated_at) VALUES (?,?,?,?,?,?,?,?,'running',?,?,?)")
             .run(attemptId, runId, parentId, role, optionalString(d.provider,"provider"), optionalString(d.model,"model"), optionalString(d.host,"host"), phase, at, at, at);
-          this.db.prepare("UPDATE runs SET phase=COALESCE(?,phase),updated_at=? WHERE id=?").run(phase, at, runId);
         } else {
           const attempt = getRow(this.db.prepare("SELECT * FROM attempts WHERE id=?").get(attemptId), "ATTEMPT_NOT_FOUND");
           if (attempt.run_id !== runId) throw new LedgerError("ATTEMPT_RUN_MISMATCH", "Attempt belongs to another run", 409);
@@ -123,18 +124,18 @@ export class LedgerStore {
             this.db.prepare("UPDATE attempts SET last_heartbeat_at=?,updated_at=? WHERE id=?").run(at, at, attemptId);
           } else if (kind === "attempt.progress") {
             this.db.prepare("UPDATE attempts SET phase=COALESCE(?,phase),updated_at=? WHERE id=?").run(phase, at, attemptId);
-            this.db.prepare("UPDATE runs SET phase=COALESCE(?,phase),updated_at=? WHERE id=?").run(phase, at, runId);
           } else {
             const status = kind.split(".")[1];
             if (!terminalAttempts.has(status)) throw new LedgerError("VALIDATION", "Unknown attempt outcome");
             const exitCode = d.exit_code;
-            if (exitCode !== undefined && exitCode !== null && (!Number.isInteger(exitCode) || (exitCode as number) < -32768 || (exitCode as number) > 32767)) {
-              throw new LedgerError("VALIDATION", "exit_code must be an integer");
+            if (exitCode !== undefined && exitCode !== null && !Number.isSafeInteger(exitCode)) {
+              throw new LedgerError("VALIDATION", "exit_code must be a safe integer");
             }
             this.db.prepare("UPDATE attempts SET status=?,exit_code=?,phase=COALESCE(?,phase),finished_at=?,last_heartbeat_at=?,updated_at=? WHERE id=?")
               .run(status, exitCode ?? null, phase, at, at, at, attemptId);
           }
         }
+        this.db.prepare("UPDATE runs SET phase=COALESCE(?,phase),updated_at=? WHERE id=?").run(phase, at, runId);
       } else throw new LedgerError("VALIDATION", "Unsupported event type");
 
       const result = this.db.prepare("INSERT INTO events(event_id,event_hash,run_id,attempt_id,actor,event_type,phase,message,occurred_at,recorded_at,payload_json) VALUES (?,?,?,?,?,?,?,?,?,?,?)")
@@ -167,7 +168,7 @@ export class LedgerStore {
     return this.db.transaction(() => {
       const prior = this.db.prepare("SELECT * FROM artifacts WHERE id=?").get(input.id) as Row | undefined;
       if (prior) {
-        if (prior.sha256 !== input.sha256 || prior.size_bytes !== input.bytes || prior.run_id !== input.runId || prior.attempt_id !== input.attemptId) throw new LedgerError("ARTIFACT_ID_CONFLICT","Artifact ID already exists with different data",409);
+        if (prior.sha256 !== input.sha256 || prior.size_bytes !== input.bytes || prior.run_id !== input.runId || prior.attempt_id !== input.attemptId || prior.artifact_type !== input.type || prior.storage_key !== input.key || prior.content_type !== input.contentType || prior.encoding !== input.encoding || prior.sanitized !== (input.sanitized ? 1 : 0)) throw new LedgerError("ARTIFACT_ID_CONFLICT","Artifact ID already exists with different data",409);
         return {accepted:true,duplicate:true};
       }
       getRow(this.db.prepare("SELECT id FROM runs WHERE id=?").get(input.runId),"RUN_NOT_FOUND");
@@ -201,13 +202,15 @@ export class LedgerStore {
   getAttempt(id: string) {
     const attempt = this.db.prepare("SELECT * FROM attempts WHERE id=?").get(id);
     if (!attempt) throw new LedgerError("ATTEMPT_NOT_FOUND","Attempt does not exist",404);
-    return attempt as Row;
+    return { ...(attempt as Row), events: this.getEvents({attemptId:id,limit:500}), history_limit:500 };
   }
-  getEvents(filters: {runId?:string; afterSeq?:number; limit?:number}) {
+  getEvents(filters: {runId?:string; attemptId?:string; afterSeq?:number; limit?:number}) {
     const limit=Math.min(Math.max(filters.limit ?? 100,1),500), seq=Math.max(filters.afterSeq ?? 0,0);
-    const rows=filters.runId
-      ? this.db.prepare("SELECT * FROM events WHERE run_id=? AND seq>? ORDER BY seq LIMIT ?").all(filters.runId,seq,limit)
-      : this.db.prepare("SELECT * FROM events WHERE seq>? ORDER BY seq LIMIT ?").all(seq,limit);
+    const clauses=["seq>?"];
+    const values: (string|number)[]=[seq];
+    if (filters.runId) {clauses.push("run_id=?");values.push(filters.runId);}
+    if (filters.attemptId) {clauses.push("attempt_id=?");values.push(filters.attemptId);}
+    const rows=this.db.prepare("SELECT * FROM events WHERE "+clauses.join(" AND ")+" ORDER BY seq LIMIT ?").all(...values,limit);
     return (rows as Row[]).map(r=>({...r,payload:JSON.parse(r.payload_json),payload_json:undefined}));
   }
   activeAttempts(ttlMs: number) {
@@ -219,8 +222,17 @@ export class LedgerStore {
   }
   usageSummary(runId?: string) {
     const where=runId ? " WHERE a.run_id=?" : "";
-    const sql="SELECT COUNT(*) AS samples, SUM(u.input_tokens) AS input_tokens, SUM(u.output_tokens) AS output_tokens, SUM(u.cached_input_tokens) AS cached_input_tokens, SUM(u.cost_usd_micros) AS cost_usd_micros, SUM(CASE WHEN u.cost_usd_micros IS NULL THEN 1 ELSE 0 END) AS unknown_cost_samples FROM usage_samples u JOIN attempts a ON u.attempt_id=a.id"+where;
-    return runId ? this.db.prepare(sql).get(runId) : this.db.prepare(sql).get();
+    const params=runId ? [runId] : [];
+    const metrics="COUNT(*) AS samples, SUM(u.input_tokens) AS input_tokens, SUM(u.output_tokens) AS output_tokens, SUM(u.cached_input_tokens) AS cached_input_tokens, SUM(u.cost_usd_micros) AS cost_usd_micros, COUNT(*) - COUNT(u.cost_usd_micros) AS unknown_cost_samples, COUNT(*) - COUNT(u.input_tokens) AS unknown_input_token_samples, COUNT(*) - COUNT(u.output_tokens) AS unknown_output_token_samples, COUNT(*) - COUNT(u.cached_input_tokens) AS unknown_cached_input_token_samples";
+    const from=" FROM usage_samples u JOIN attempts a ON u.attempt_id=a.id";
+    const total=this.db.prepare("SELECT "+metrics+from+where).get(...params) as Row;
+    const bySource:Record<string,Row>={};
+    for (const source of ["provider_reported","estimated","manual"]) {
+      bySource[source]=this.db.prepare("SELECT "+metrics+from+where+(runId ? " AND" : " WHERE")+" u.source=?").get(...params,source) as Row;
+    }
+    const coverage=this.db.prepare("SELECT COUNT(*) AS attempts, COUNT(CASE WHEN EXISTS(SELECT 1 FROM usage_samples u WHERE u.attempt_id=a.id) THEN 1 END) AS attempts_with_samples FROM attempts a"+where).get(...params) as Row;
+    // Legacy flat totals combine sources; use by_source for provider-reported charges.
+    return {...total,...coverage,attempts_without_samples:coverage.attempts-coverage.attempts_with_samples,by_source:bySource};
   }
   getArtifact(id:string) {
     const row=this.db.prepare("SELECT * FROM artifacts WHERE id=?").get(id) as Row|undefined;

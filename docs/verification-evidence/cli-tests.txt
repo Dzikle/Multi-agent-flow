@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: CLI retains offline events and drains them before a newer emit after service restart
+ok 1 - CLI retains offline events and drains them before a newer emit after service restart
+  ---
+  duration_ms: 399.9499
+  type: 'test'
+  ...
+# Subtest: CLI spool allocation preserves append order when the producer clock goes backwards
+ok 2 - CLI spool allocation preserves append order when the producer clock goes backwards
+  ---
+  duration_ms: 88.3545
+  type: 'test'
+  ...
+# Subtest: CLI times out an unresponsive HTTP service and retains the original event
+ok 3 - CLI times out an unresponsive HTTP service and retains the original event
+  ---
+  duration_ms: 182.0726
+  type: 'test'
+  ...
+# Subtest: CLI process killed after commit retains its spool and replays with the original ID exactly once
+ok 4 - CLI process killed after commit retains its spool and replays with the original ID exactly once
+  ---
+  duration_ms: 190.762
+  type: 'test'
+  ...
+# Subtest: overlapping CLI replays cannot delete a newer queued event after clock rollback
+ok 5 - overlapping CLI replays cannot delete a newer queued event after clock rollback
+  ---
+  duration_ms: 376.2892
+  type: 'test'
+  ...
+# Subtest: CLI read commands match HTTP, reject invalid credentials, and never print credentials
+ok 6 - CLI read commands match HTTP, reject invalid credentials, and never print credentials
+  ---
+  duration_ms: 845.62
+  type: 'test'
+  ...
+# Subtest: CLI rejects malformed input without poisoning the spool and stops replay at its first failure
+ok 7 - CLI rejects malformed input without poisoning the spool and stops replay at its first failure
+  ---
+  duration_ms: 202.315
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2781.5717

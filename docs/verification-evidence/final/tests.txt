@@ -1,0 +1,182 @@
+
+> multi-agent-flow-ledger@0.1.0 test
+> tsx --test tests/*.test.ts
+
+TAP version 13
+# Subtest: artifact replay repairs lost bytes after restart without duplicating metadata or events
+ok 1 - artifact replay repairs lost bytes after restart without duplicating metadata or events
+  ---
+  duration_ms: 3975.452
+  type: 'test'
+  ...
+# Subtest: artifact ID replay rejects changed metadata even when bytes match
+ok 2 - artifact ID replay rejects changed metadata even when bytes match
+  ---
+  duration_ms: 7538.6849
+  type: 'test'
+  ...
+# Subtest: corrupt artifact bytes fail retrieval and identical replay restores integrity
+ok 3 - corrupt artifact bytes fail retrieval and identical replay restores integrity
+  ---
+  duration_ms: 5067.4526
+  type: 'test'
+  ...
+# Subtest: artifact validation failures leave no bytes or metadata and gzip downloads retain their encoding
+ok 4 - artifact validation failures leave no bytes or metadata and gzip downloads retain their encoding
+  ---
+  duration_ms: 4278.2271
+  type: 'test'
+  ...
+# Subtest: an interrupted HTTP upload stores no partial artifact or attachment event
+ok 5 - an interrupted HTTP upload stores no partial artifact or attachment event
+  ---
+  duration_ms: 1677.0631
+  type: 'test'
+  ...
+# Subtest: artifact retry recovers after process exit between file rename and metadata commit
+ok 6 - artifact retry recovers after process exit between file rename and metadata commit
+  ---
+  duration_ms: 2672.3271
+  type: 'test'
+  ...
+# Subtest: usage separates provider estimates and manual totals and reports missing coverage
+ok 7 - usage separates provider estimates and manual totals and reports missing coverage
+  ---
+  duration_ms: 498.1381
+  type: 'test'
+  ...
+# Subtest: CLI retains offline events and drains them before a newer emit after service restart
+ok 8 - CLI retains offline events and drains them before a newer emit after service restart
+  ---
+  duration_ms: 11942.8357
+  type: 'test'
+  ...
+# Subtest: CLI spool allocation preserves append order when the producer clock goes backwards
+ok 9 - CLI spool allocation preserves append order when the producer clock goes backwards
+  ---
+  duration_ms: 4213.7423
+  type: 'test'
+  ...
+# Subtest: CLI times out an unresponsive HTTP service and retains the original event
+ok 10 - CLI times out an unresponsive HTTP service and retains the original event
+  ---
+  duration_ms: 3002.5004
+  type: 'test'
+  ...
+# Subtest: CLI process killed after commit retains its spool and replays with the original ID exactly once
+ok 11 - CLI process killed after commit retains its spool and replays with the original ID exactly once
+  ---
+  duration_ms: 2631.2263
+  type: 'test'
+  ...
+# Subtest: overlapping CLI replays cannot delete a newer queued event after clock rollback
+ok 12 - overlapping CLI replays cannot delete a newer queued event after clock rollback
+  ---
+  duration_ms: 2809.5997
+  type: 'test'
+  ...
+# Subtest: CLI read commands match HTTP, reject invalid credentials, and never print credentials
+ok 13 - CLI read commands match HTTP, reject invalid credentials, and never print credentials
+  ---
+  duration_ms: 2037.5361
+  type: 'test'
+  ...
+# Subtest: CLI rejects malformed input without poisoning the spool and stops replay at its first failure
+ok 14 - CLI rejects malformed input without poisoning the spool and stops replay at its first failure
+  ---
+  duration_ms: 879.0847
+  type: 'test'
+  ...
+# Subtest: append-only history rejects SQLite replacement through either unique key
+ok 15 - append-only history rejects SQLite replacement through either unique key
+  ---
+  duration_ms: 22.8707
+  type: 'test'
+  ...
+# Subtest: happy path persists run, attempt, events and survives restart
+ok 16 - happy path persists run, attempt, events and survives restart
+  ---
+  duration_ms: 3118.4769
+  type: 'test'
+  ...
+# Subtest: idempotency, changed payload conflict and forbidden post
+ok 17 - idempotency, changed payload conflict and forbidden post
+  ---
+  duration_ms: 7927.587
+  type: 'test'
+  ...
+# Subtest: QA failure leaves run open, retry gets a distinct attempt, terminal transition rejected
+ok 18 - QA failure leaves run open, retry gets a distinct attempt, terminal transition rejected
+  ---
+  duration_ms: 2595.3094
+  type: 'test'
+  ...
+# Subtest: system ticks, active attempt stale indication and usage idempotency
+ok 19 - system ticks, active attempt stale indication and usage idempotency
+  ---
+  duration_ms: 2521.7589
+  type: 'test'
+  ...
+# Subtest: artifact integrity, replay and download permission
+ok 20 - artifact integrity, replay and download permission
+  ---
+  duration_ms: 2566.857
+  type: 'test'
+  ...
+# Subtest: malformed HTTP JSON returns a client error, not an internal failure
+ok 21 - malformed HTTP JSON returns a client error, not an internal failure
+  ---
+  duration_ms: 2703.0242
+  type: 'test'
+  ...
+# Subtest: invalid numeric pagination is rejected deterministically
+ok 22 - invalid numeric pagination is rejected deterministically
+  ---
+  duration_ms: 8341.0763
+  type: 'test'
+  ...
+# Subtest: repeated query filters return validation errors rather than SQLite binding failures
+ok 23 - repeated query filters return validation errors rather than SQLite binding failures
+  ---
+  duration_ms: 1750.3134
+  type: 'test'
+  ...
+# Subtest: invalid numeric server configuration fails before creating storage
+ok 24 - invalid numeric server configuration fails before creating storage
+  ---
+  duration_ms: 1.016
+  type: 'test'
+  ...
+# Subtest: external events cannot occupy internal artifact and usage IDs
+ok 25 - external events cannot occupy internal artifact and usage IDs
+  ---
+  duration_ms: 2938.8662
+  type: 'test'
+  ...
+# Subtest: work item identity cannot collide when components contain separators
+ok 26 - work item identity cannot collide when components contain separators
+  ---
+  duration_ms: 2150.5492
+  type: 'test'
+  ...
+# Subtest: attempt terminal events refresh run phase and expose complete attempt history
+ok 27 - attempt terminal events refresh run phase and expose complete attempt history
+  ---
+  duration_ms: 2555.316
+  type: 'test'
+  ...
+# Subtest: Windows crash exit codes can settle failed attempts without leaving them running
+ok 28 - Windows crash exit codes can settle failed attempts without leaving them running
+  ---
+  duration_ms: 1676.9631
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29560.2014
