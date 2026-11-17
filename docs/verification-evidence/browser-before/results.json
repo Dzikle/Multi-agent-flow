@@ -1,0 +1,149 @@
+{
+  "verified_at": "2026-11-17T21:15:38.036Z",
+  "browser": "157.0.8103.79",
+  "node": "v22.23.5",
+  "viewport": {
+    "desktop": "1440x1000",
+    "mobile": "390x844"
+  },
+  "synthetic_data_only": true,
+  "results": [
+    {
+      "name": "desktop rejects invalid authentication",
+      "passed": true
+    },
+    {
+      "name": "desktop active and completed run status, phase and specialist",
+      "passed": true
+    },
+    {
+      "name": "completed run exposes failed attempt and successful retry",
+      "passed": true
+    },
+    {
+      "name": "manual refresh updates selected run detail",
+      "passed": false,
+      "error": "page.waitForFunction: Timeout 1500ms exceeded."
+    },
+    {
+      "name": "API failure reports unavailable and successful refresh recovers",
+      "passed": true
+    },
+    {
+      "name": "switching to invalid token clears authenticated data",
+      "passed": false,
+      "error": "Previous authenticated rows must be cleared\n\n2 !== 0\n"
+    },
+    {
+      "name": "read token remains only in page memory",
+      "passed": true
+    },
+    {
+      "name": "mobile rejects invalid authentication",
+      "passed": true
+    },
+    {
+      "name": "mobile shows completed attempt history and active run",
+      "passed": true
+    },
+    {
+      "name": "mobile page fits viewport without document overflow",
+      "passed": false,
+      "error": "Document width 543 exceeds viewport 390"
+    },
+    {
+      "name": "dashboard exposes only read controls and uses only read API requests",
+      "passed": true
+    },
+    {
+      "name": "no unhandled browser JavaScript errors",
+      "passed": true
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-completed-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-active-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-completed-run"
+    }
+  ]
+}

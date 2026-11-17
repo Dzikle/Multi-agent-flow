@@ -1,0 +1,19 @@
+{
+  "integrity": [
+    {
+      "integrity_check": "ok"
+    }
+  ],
+  "foreign_key_check": [],
+  "row_counts": {
+    "work_items": 1,
+    "runs": 2,
+    "attempts": 9,
+    "events": 53,
+    "artifacts": 1,
+    "usage_samples": 3
+  },
+  "projection_audit": "All lifecycle statuses and run phases match replayed immutable history",
+  "constraint_probe": "Append-only triggers, FK and rollback tested on SQLite backup; live DB never altered manually",
+  "storage": "C:\\Users\\STOJAN~1\\AppData\\Local\\Temp\\ledger-standalone-JJxQHF"
+}

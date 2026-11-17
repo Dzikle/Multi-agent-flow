@@ -107,5 +107,10 @@ CREATE TRIGGER IF NOT EXISTS events_no_update BEFORE UPDATE ON events
 BEGIN SELECT RAISE(ABORT,'events are immutable'); END;
 CREATE TRIGGER IF NOT EXISTS events_no_delete BEFORE DELETE ON events
 BEGIN SELECT RAISE(ABORT,'events are immutable'); END;
+-- REPLACE can bypass delete triggers when recursive_triggers is disabled.
+-- Guard both unique keys before SQLite removes the existing audit record.
+CREATE TRIGGER IF NOT EXISTS events_no_replace BEFORE INSERT ON events
+WHEN EXISTS(SELECT 1 FROM events WHERE event_id=NEW.event_id OR seq=NEW.seq)
+BEGIN SELECT RAISE(ABORT,'events are immutable'); END;
 
 INSERT OR IGNORE INTO schema_migrations(version) VALUES (1);

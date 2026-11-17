@@ -2,31 +2,48 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Execution Ledger</title>
 <style>
-:root{color-scheme:dark;font-family:system-ui,sans-serif}body{margin:0;background:#121517;color:#f1f3f4}main{max-width:1150px;margin:auto;padding:24px}h1{font-size:1.55rem;margin-bottom:0}p,small{color:#abb6bc}label{display:flex;align-items:center;gap:8px;flex-wrap:wrap}input,button{padding:9px;border-radius:6px;border:1px solid #414b50;background:#22292d;color:#fff}button{cursor:pointer}table{width:100%;border-collapse:collapse;margin-top:18px}td,th{padding:12px 9px;border-bottom:1px solid #323b40;text-align:left;font-size:.93rem}th{color:#abb6bc}tr{cursor:pointer}tr:hover{background:#212a2f}.pill{border:1px solid #5e6b70;border-radius:10px;padding:3px 7px;font-size:.8rem}.running{color:#8bc7ff}.completed{color:#7ed4a7}.blocked,.failed{color:#ff9999}.subtle{color:#aab8bd;font-size:.81rem}.detail{white-space:pre-wrap;overflow-wrap:anywhere;background:#1b2125;border:1px solid #38434a;border-radius:8px;padding:15px;max-height:420px;overflow:auto}#notice{min-height:22px}section{margin-top:18px}@media(max-width:640px){main{padding:12px}td,th{padding:8px 4px;font-size:.8rem}}
+:root{color-scheme:dark;font-family:system-ui,sans-serif}body{margin:0;background:#121517;color:#f1f3f4}main{max-width:1150px;margin:auto;padding:24px}h1{font-size:1.55rem;margin-bottom:0}p,small{color:#abb6bc}label{display:flex;align-items:center;gap:8px;flex-wrap:wrap}input,button{padding:9px;border-radius:6px;border:1px solid #414b50;background:#22292d;color:#fff}input{min-width:0;max-width:100%;box-sizing:border-box}button{cursor:pointer}.table-scroll{overflow-x:auto;max-width:100%}table{width:100%;border-collapse:collapse;margin-top:18px}td,th{padding:12px 9px;border-bottom:1px solid #323b40;text-align:left;font-size:.93rem}th{color:#abb6bc}tr{cursor:pointer}tr:hover{background:#212a2f}.pill{border:1px solid #5e6b70;border-radius:10px;padding:3px 7px;font-size:.8rem}.running{color:#8bc7ff}.completed{color:#7ed4a7}.blocked,.failed{color:#ff9999}.subtle{color:#aab8bd;font-size:.81rem}.detail{white-space:pre-wrap;overflow-wrap:anywhere;background:#1b2125;border:1px solid #38434a;border-radius:8px;padding:15px;max-height:420px;overflow:auto}#notice{min-height:22px}section{margin-top:18px}@media(max-width:640px){main{padding:12px}td,th{padding:8px 4px;font-size:.8rem}}
 </style></head><body><main>
 <h1>Execution Ledger</h1>
 <p>Read-only execution status · task authority remains in GitHub and dispatcher</p>
 <label>Read token <input id="token" type="password" autocomplete="off" placeholder="LEDGER_READ_TOKEN">
 <button id="connect">Connect</button> <button id="refresh">Refresh</button></label>
-<p id="notice">Enter a read token to load status. The token stays in this page's memory.</p>
-<section><h2>Runs</h2><table><thead><tr><th>Work item</th><th>Run</th><th>Status</th><th>Phase</th><th>Active specialist</th><th>Last update</th></tr></thead><tbody id="rows"></tbody></table></section>
+<p id="notice" role="status">Enter a read token to load status. The token stays in this page's memory.</p>
+<section><h2>Runs</h2><div class="table-scroll" role="region" aria-label="Run status table" tabindex="0"><table><thead><tr><th>Work item</th><th>Run</th><th>Status</th><th>Phase</th><th>Active specialist</th><th>Last update</th></tr></thead><tbody id="rows"></tbody></table></div></section>
 <section><h2>Selected run</h2><pre class="detail" id="detail">Select a run.</pre></section>
 </main><script>
 "use strict";
-let key="",inflight=false;
+let key="",inflight=false,selectedRunId=null,generation=0;
 const el=id=>document.getElementById(id);
 async function api(path){
  const r=await fetch(path,{headers:{Authorization:"Bearer "+key},cache:"no-store"});
- const d=await r.json();if(!r.ok)throw new Error(d.error?.message||"HTTP "+r.status);return d;
+ const d=await r.json();if(!r.ok){const error=new Error(d.error?.message||"HTTP "+r.status);error.status=r.status;throw error}return d;
 }
 function cell(tr,value,cls){
  const td=document.createElement("td");td.textContent=value??"—";if(cls)td.className=cls;tr.append(td);
 }
 function time(v){return v?new Date(v).toLocaleString():"—"}
+async function loadDetail(id,version){
+ const eventsBase="/v1/events?run_id="+encodeURIComponent(id),eventsUrl=eventsBase+"&limit=500";
+ const [detail,page]=await Promise.all([api("/v1/runs/"+encodeURIComponent(id)),api(eventsUrl)]);
+ if(version!==generation||selectedRunId!==id)return;
+ const last=page.events.at(-1);
+ const truncated=page.events.length===500&&(await api(eventsBase+"&after_seq="+last.seq+"&limit=1")).events.length>0;
+ const event_history={limit:500,after_seq:0,truncated,next_after_seq:truncated?last.seq:null,
+  continuation_url:truncated?eventsUrl+"&after_seq="+last.seq:null,
+  notice:truncated?"Showing first 500 events; more are available using continuation_url and next_after_seq.":"All run events shown in server commit order."};
+ if(version===generation&&selectedRunId===id)el("detail").textContent=JSON.stringify({...detail,events:page.events,event_history},null,2);
+}
+function clearData(){el("rows").replaceChildren();selectedRunId=null;el("detail").textContent="Select a run."}
+function showError(error){
+ if(error.status===401||error.status===403){clearData();el("notice").textContent="Authentication failed: "+error.message+". Enter a valid read token and connect."}
+ else el("notice").textContent="API unavailable. Displayed data is last confirmed; refresh to retry. "+error.message;
+}
 async function refresh(){
- if(!key||inflight)return;inflight=true;
+ if(!key||inflight)return;inflight=true;const version=generation;
  try{
  const [runs,agents]=await Promise.all([api("/v1/runs?limit=100"),api("/v1/agents/active")]);
+ if(version!==generation)return;
  el("rows").replaceChildren();
  for(const r of runs.runs){
   const tr=document.createElement("tr"),a=agents.attempts.filter(x=>x.run_id===r.id);
@@ -34,13 +51,14 @@ async function refresh(){
   cell(tr,r.id);cell(tr,r.status,r.status);cell(tr,r.phase);
   cell(tr,a.map(x=>x.role+(x.model?" · "+x.model:"")+(x.suspected_stale?" (stale?)":"")).join(", ")||"—");
   cell(tr,time(r.updated_at),"subtle");
-  tr.addEventListener("click",async()=>{try{el("detail").textContent=JSON.stringify(await api("/v1/runs/"+encodeURIComponent(r.id)),null,2)}catch(e){el("detail").textContent=String(e)}});
+  tr.addEventListener("click",async()=>{selectedRunId=r.id;try{await loadDetail(r.id,version)}catch(e){if(version===generation)showError(e)}});
   el("rows").append(tr);
  }
- el("notice").textContent=runs.runs.length+" runs · "+agents.attempts.length+" active attempts · last refreshed "+new Date().toLocaleTimeString();
- }catch(e){el("notice").textContent=String(e)}finally{inflight=false}
+ if(selectedRunId)await loadDetail(selectedRunId,version);
+ if(version===generation)el("notice").textContent=runs.runs.length+" runs · "+agents.attempts.length+" active attempts · last refreshed "+new Date().toLocaleTimeString();
+ }catch(e){if(version===generation)showError(e)}finally{inflight=false;if(version!==generation)refresh()}
 }
-el("connect").addEventListener("click",()=>{key=el("token").value;el("token").value="";refresh()});
+el("connect").addEventListener("click",()=>{generation++;key=el("token").value.trim();el("token").value="";clearData();el("notice").textContent=key?"Loading status…":"Enter a read token to load status. The token stays in this page's memory.";refresh()});
 el("refresh").addEventListener("click",refresh);
 setInterval(refresh,8000);
 </script></body></html>

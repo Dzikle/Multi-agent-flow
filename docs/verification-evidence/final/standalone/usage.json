@@ -1,0 +1,100 @@
+{
+  "summary": {
+    "samples": 3,
+    "input_tokens": 300,
+    "output_tokens": 50,
+    "cached_input_tokens": 10,
+    "cost_usd_micros": 940,
+    "unknown_cost_samples": 1,
+    "unknown_input_token_samples": 1,
+    "unknown_output_token_samples": 1,
+    "unknown_cached_input_token_samples": 2,
+    "attempts": 6,
+    "attempts_with_samples": 3,
+    "attempts_without_samples": 3,
+    "by_source": {
+      "provider_reported": {
+        "samples": 2,
+        "input_tokens": 100,
+        "output_tokens": 20,
+        "cached_input_tokens": 10,
+        "cost_usd_micros": 40,
+        "unknown_cost_samples": 1,
+        "unknown_input_token_samples": 1,
+        "unknown_output_token_samples": 1,
+        "unknown_cached_input_token_samples": 1
+      },
+      "estimated": {
+        "samples": 1,
+        "input_tokens": 200,
+        "output_tokens": 30,
+        "cached_input_tokens": null,
+        "cost_usd_micros": 900,
+        "unknown_cost_samples": 0,
+        "unknown_input_token_samples": 0,
+        "unknown_output_token_samples": 0,
+        "unknown_cached_input_token_samples": 1
+      },
+      "manual": {
+        "samples": 0,
+        "input_tokens": null,
+        "output_tokens": null,
+        "cached_input_tokens": null,
+        "cost_usd_micros": null,
+        "unknown_cost_samples": 0,
+        "unknown_input_token_samples": 0,
+        "unknown_output_token_samples": 0,
+        "unknown_cached_input_token_samples": 0
+      }
+    }
+  },
+  "missing": {
+    "samples": 0,
+    "input_tokens": null,
+    "output_tokens": null,
+    "cached_input_tokens": null,
+    "cost_usd_micros": null,
+    "unknown_cost_samples": 0,
+    "unknown_input_token_samples": 0,
+    "unknown_output_token_samples": 0,
+    "unknown_cached_input_token_samples": 0,
+    "attempts": 3,
+    "attempts_with_samples": 0,
+    "attempts_without_samples": 3,
+    "by_source": {
+      "provider_reported": {
+        "samples": 0,
+        "input_tokens": null,
+        "output_tokens": null,
+        "cached_input_tokens": null,
+        "cost_usd_micros": null,
+        "unknown_cost_samples": 0,
+        "unknown_input_token_samples": 0,
+        "unknown_output_token_samples": 0,
+        "unknown_cached_input_token_samples": 0
+      },
+      "estimated": {
+        "samples": 0,
+        "input_tokens": null,
+        "output_tokens": null,
+        "cached_input_tokens": null,
+        "cost_usd_micros": null,
+        "unknown_cost_samples": 0,
+        "unknown_input_token_samples": 0,
+        "unknown_output_token_samples": 0,
+        "unknown_cached_input_token_samples": 0
+      },
+      "manual": {
+        "samples": 0,
+        "input_tokens": null,
+        "output_tokens": null,
+        "cached_input_tokens": null,
+        "cost_usd_micros": null,
+        "unknown_cost_samples": 0,
+        "unknown_input_token_samples": 0,
+        "unknown_output_token_samples": 0,
+        "unknown_cached_input_token_samples": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,669 @@
+{
+  "run": {
+    "id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+    "work_item_id": "3bf0d37d58f046f838b794bcdf9402a7",
+    "status": "completed",
+    "phase": "complete",
+    "result": "Synthetic standalone lifecycle verified",
+    "started_at": "2026-11-17T21:41:36.870Z",
+    "finished_at": "2026-11-17T21:41:36.900Z",
+    "updated_at": "2026-11-17T21:41:36.900Z",
+    "created_at": "2026-11-17T21:41:36.866Z",
+    "source": "github",
+    "repository": "Dzikle/Multi-agent-flow",
+    "external_id": "synthetic-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+    "title": "Synthetic verification only",
+    "attempts": [
+      {
+        "id": "coordinator-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "parent_attempt_id": null,
+        "role": "coordinator",
+        "provider": "synthetic-a",
+        "model": "synthetic-model-0",
+        "host": null,
+        "phase": "planning",
+        "status": "succeeded",
+        "exit_code": 0,
+        "started_at": "2026-11-17T21:41:36.872Z",
+        "finished_at": "2026-11-17T21:41:36.876Z",
+        "last_heartbeat_at": "2026-11-17T21:41:36.876Z",
+        "updated_at": "2026-11-17T21:41:36.876Z"
+      },
+      {
+        "id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "parent_attempt_id": null,
+        "role": "developer",
+        "provider": "synthetic-b",
+        "model": "synthetic-model-1",
+        "host": null,
+        "phase": "implementation",
+        "status": "succeeded",
+        "exit_code": 0,
+        "started_at": "2026-11-17T21:41:36.877Z",
+        "finished_at": "2026-11-17T21:41:36.888Z",
+        "last_heartbeat_at": "2026-11-17T21:41:36.888Z",
+        "updated_at": "2026-11-17T21:41:36.888Z"
+      },
+      {
+        "id": "reviewer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "parent_attempt_id": null,
+        "role": "reviewer",
+        "provider": "synthetic-a",
+        "model": "synthetic-model-2",
+        "host": null,
+        "phase": "review",
+        "status": "succeeded",
+        "exit_code": 0,
+        "started_at": "2026-11-17T21:41:36.889Z",
+        "finished_at": "2026-11-17T21:41:36.890Z",
+        "last_heartbeat_at": "2026-11-17T21:41:36.890Z",
+        "updated_at": "2026-11-17T21:41:36.890Z"
+      },
+      {
+        "id": "qa-failed-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "parent_attempt_id": null,
+        "role": "qa",
+        "provider": "synthetic-b",
+        "model": "synthetic-model-3",
+        "host": null,
+        "phase": "qa",
+        "status": "failed",
+        "exit_code": 1,
+        "started_at": "2026-11-17T21:41:36.891Z",
+        "finished_at": "2026-11-17T21:41:36.893Z",
+        "last_heartbeat_at": "2026-11-17T21:41:36.893Z",
+        "updated_at": "2026-11-17T21:41:36.893Z"
+      },
+      {
+        "id": "correction-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "parent_attempt_id": "qa-failed-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "role": "developer",
+        "provider": "synthetic-a",
+        "model": "synthetic-model-4",
+        "host": null,
+        "phase": "correction",
+        "status": "succeeded",
+        "exit_code": 0,
+        "started_at": "2026-11-17T21:41:36.896Z",
+        "finished_at": "2026-11-17T21:41:36.897Z",
+        "last_heartbeat_at": "2026-11-17T21:41:36.897Z",
+        "updated_at": "2026-11-17T21:41:36.897Z"
+      },
+      {
+        "id": "qa-retry-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "parent_attempt_id": null,
+        "role": "qa",
+        "provider": "synthetic-b",
+        "model": "synthetic-model-5",
+        "host": null,
+        "phase": "qa",
+        "status": "succeeded",
+        "exit_code": 0,
+        "started_at": "2026-11-17T21:41:36.898Z",
+        "finished_at": "2026-11-17T21:41:36.899Z",
+        "last_heartbeat_at": "2026-11-17T21:41:36.899Z",
+        "updated_at": "2026-11-17T21:41:36.899Z"
+      }
+    ],
+    "artifacts": [],
+    "latest_event": {
+      "seq": 22,
+      "event_type": "run.completed",
+      "recorded_at": "2026-11-17T21:41:36.900Z"
+    }
+  },
+  "events": [
+    {
+      "seq": 1,
+      "event_id": "8a8c3ea5-21f2-408d-9359-0c503176bf13",
+      "event_hash": "d8214636452a07d2ff7127c37ead9968a68021058d45331280529fc8604a54cb",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": null,
+      "actor": "standalone-verification",
+      "event_type": "run.created",
+      "phase": "coordination",
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.860Z",
+      "recorded_at": "2026-11-17T21:41:36.866Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "data": {
+          "phase": "coordination",
+          "work_item": {
+            "external_id": "synthetic-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+            "repository": "Dzikle/Multi-agent-flow",
+            "source": "github",
+            "title": "Synthetic verification only"
+          }
+        },
+        "event_id": "8a8c3ea5-21f2-408d-9359-0c503176bf13",
+        "occurred_at": "2026-11-17T21:41:36.860Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "run.created"
+      }
+    },
+    {
+      "seq": 2,
+      "event_id": "67b3762f-3f5c-4baf-8019-7c610d0c0961",
+      "event_hash": "62e0202ada967eccc1687ca93406f574734e9b2af605511d1a8a6bf37056b228",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": null,
+      "actor": "standalone-verification",
+      "event_type": "run.started",
+      "phase": null,
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.869Z",
+      "recorded_at": "2026-11-17T21:41:36.870Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "data": {},
+        "event_id": "67b3762f-3f5c-4baf-8019-7c610d0c0961",
+        "occurred_at": "2026-11-17T21:41:36.869Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "run.started"
+      }
+    },
+    {
+      "seq": 3,
+      "event_id": "e17f54fd-c167-4628-8992-39fef712833e",
+      "event_hash": "8ada5d43c36ae1831354884a64544841b6c2011ffeefd0f8a03ee7229ec28313",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "coordinator-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.started",
+      "phase": "planning",
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.871Z",
+      "recorded_at": "2026-11-17T21:41:36.872Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "coordinator-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "model": "synthetic-model-0",
+          "phase": "planning",
+          "provider": "synthetic-a",
+          "role": "coordinator"
+        },
+        "event_id": "e17f54fd-c167-4628-8992-39fef712833e",
+        "occurred_at": "2026-11-17T21:41:36.871Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.started"
+      }
+    },
+    {
+      "seq": 4,
+      "event_id": "e9149d9d-7f5a-4c9d-9ee4-f3a9ae72b04c",
+      "event_hash": "82305fe408217ccc764bec5529b159d2d65393c73358997eb5b2b557817eec72",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "coordinator-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.progress",
+      "phase": null,
+      "message": "Synthetic coordination checkpoint",
+      "occurred_at": "2026-11-17T21:41:36.873Z",
+      "recorded_at": "2026-11-17T21:41:36.874Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "coordinator-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "message": "Synthetic coordination checkpoint"
+        },
+        "event_id": "e9149d9d-7f5a-4c9d-9ee4-f3a9ae72b04c",
+        "occurred_at": "2026-11-17T21:41:36.873Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.progress"
+      }
+    },
+    {
+      "seq": 5,
+      "event_id": "a3c9fac3-df3e-460b-93f7-b7582f3fc14e",
+      "event_hash": "9ef27cd5b1c028286a57c85242d0f0802f7ef2968743ae32a6772f3493b38f94",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "coordinator-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.succeeded",
+      "phase": null,
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.875Z",
+      "recorded_at": "2026-11-17T21:41:36.876Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "coordinator-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "exit_code": 0
+        },
+        "event_id": "a3c9fac3-df3e-460b-93f7-b7582f3fc14e",
+        "occurred_at": "2026-11-17T21:41:36.875Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.succeeded"
+      }
+    },
+    {
+      "seq": 6,
+      "event_id": "8d6526fc-b2cf-4e21-b022-76c9808bb0de",
+      "event_hash": "1a8077c26a769a003d85b21d0d4e497e33ec416d84955869ca079554d83e14b2",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.started",
+      "phase": "implementation",
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.877Z",
+      "recorded_at": "2026-11-17T21:41:36.877Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "model": "synthetic-model-1",
+          "phase": "implementation",
+          "provider": "synthetic-b",
+          "role": "developer"
+        },
+        "event_id": "8d6526fc-b2cf-4e21-b022-76c9808bb0de",
+        "occurred_at": "2026-11-17T21:41:36.877Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.started"
+      }
+    },
+    {
+      "seq": 7,
+      "event_id": "90f617bf-1ff6-40a2-83d3-48fb8b5e3033",
+      "event_hash": "f6a71c148a95137c0ae479ed35afe00abac76f0a8518ed6b6b5f9272e454ce51",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.progress",
+      "phase": null,
+      "message": "Synthetic developer checkpoint 0",
+      "occurred_at": "2026-11-17T21:41:36.878Z",
+      "recorded_at": "2026-11-17T21:41:36.879Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "message": "Synthetic developer checkpoint 0"
+        },
+        "event_id": "90f617bf-1ff6-40a2-83d3-48fb8b5e3033",
+        "occurred_at": "2026-11-17T21:41:36.878Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.progress"
+      }
+    },
+    {
+      "seq": 8,
+      "event_id": "61936063-f02f-45cb-a8d7-2e4330ce8cb5",
+      "event_hash": "0da5a35a7df564be5fb13e886494d6ad3b76789c638902f8a81a52feee9fba56",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.progress",
+      "phase": null,
+      "message": "Synthetic developer checkpoint 1",
+      "occurred_at": "2026-11-17T21:41:36.880Z",
+      "recorded_at": "2026-11-17T21:41:36.882Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "message": "Synthetic developer checkpoint 1"
+        },
+        "event_id": "61936063-f02f-45cb-a8d7-2e4330ce8cb5",
+        "occurred_at": "2026-11-17T21:41:36.880Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.progress"
+      }
+    },
+    {
+      "seq": 9,
+      "event_id": "e513add5-b9a7-497f-99be-d472107b1772",
+      "event_hash": "4ddb23bd650e19dcd27d10056f2344be2791f477e8f8289998a0631413890259",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.progress",
+      "phase": null,
+      "message": "Synthetic developer checkpoint 2",
+      "occurred_at": "2026-11-17T21:41:36.883Z",
+      "recorded_at": "2026-11-17T21:41:36.884Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "message": "Synthetic developer checkpoint 2"
+        },
+        "event_id": "e513add5-b9a7-497f-99be-d472107b1772",
+        "occurred_at": "2026-11-17T21:41:36.883Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.progress"
+      }
+    },
+    {
+      "seq": 10,
+      "event_id": "07908bb0-96f5-48e5-bebb-cd8ec10c47f8",
+      "event_hash": "540165a6328c66011e31ae6334bdeacdbe8deb01834de1c731d4c00d81de5e6d",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.heartbeat",
+      "phase": null,
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.884Z",
+      "recorded_at": "2026-11-17T21:41:36.885Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {},
+        "event_id": "07908bb0-96f5-48e5-bebb-cd8ec10c47f8",
+        "occurred_at": "2026-11-17T21:41:36.884Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.heartbeat"
+      }
+    },
+    {
+      "seq": 11,
+      "event_id": "7a194e76-7d52-4bbe-ac71-005517f3ed23",
+      "event_hash": "2c1ca6e89f499ee5ff14960e2dd5073cba94371ca9c143c381bc84fc7b0f4581",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.heartbeat",
+      "phase": null,
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.886Z",
+      "recorded_at": "2026-11-17T21:41:36.887Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {},
+        "event_id": "7a194e76-7d52-4bbe-ac71-005517f3ed23",
+        "occurred_at": "2026-11-17T21:41:36.886Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.heartbeat"
+      }
+    },
+    {
+      "seq": 12,
+      "event_id": "26e8eaad-ba11-454a-9f82-143d5b59763c",
+      "event_hash": "ff2b7f0c69d568d164e78fa36dfa5630ad00b06142b16a25a07cf35dba7092c2",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.succeeded",
+      "phase": null,
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.887Z",
+      "recorded_at": "2026-11-17T21:41:36.888Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "developer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "exit_code": 0
+        },
+        "event_id": "26e8eaad-ba11-454a-9f82-143d5b59763c",
+        "occurred_at": "2026-11-17T21:41:36.887Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.succeeded"
+      }
+    },
+    {
+      "seq": 13,
+      "event_id": "4535ed01-c21e-4fee-9741-03dd64232d28",
+      "event_hash": "b7f409497df255589c00da686f9537a611991984691d40eea15cfbecc965ec5b",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "reviewer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.started",
+      "phase": "review",
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.888Z",
+      "recorded_at": "2026-11-17T21:41:36.889Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "reviewer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "model": "synthetic-model-2",
+          "phase": "review",
+          "provider": "synthetic-a",
+          "role": "reviewer"
+        },
+        "event_id": "4535ed01-c21e-4fee-9741-03dd64232d28",
+        "occurred_at": "2026-11-17T21:41:36.888Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.started"
+      }
+    },
+    {
+      "seq": 14,
+      "event_id": "0cc9b36e-3143-41d1-acf2-3e184331ae9a",
+      "event_hash": "119a626524640e52f572c7bc42a1d193247c23da1506248c52e71ffd22a952a2",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "reviewer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.succeeded",
+      "phase": null,
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.889Z",
+      "recorded_at": "2026-11-17T21:41:36.890Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "reviewer-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "exit_code": 0
+        },
+        "event_id": "0cc9b36e-3143-41d1-acf2-3e184331ae9a",
+        "occurred_at": "2026-11-17T21:41:36.889Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.succeeded"
+      }
+    },
+    {
+      "seq": 15,
+      "event_id": "ba5bbd1e-b16b-4784-8352-6d85a7ceb1c3",
+      "event_hash": "47b0e032c9b1cffa04a4261c535aeaaf92989792b7a37259815b5f69075bdc64",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "qa-failed-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.started",
+      "phase": "qa",
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.890Z",
+      "recorded_at": "2026-11-17T21:41:36.891Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "qa-failed-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "model": "synthetic-model-3",
+          "phase": "qa",
+          "provider": "synthetic-b",
+          "role": "qa"
+        },
+        "event_id": "ba5bbd1e-b16b-4784-8352-6d85a7ceb1c3",
+        "occurred_at": "2026-11-17T21:41:36.890Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.started"
+      }
+    },
+    {
+      "seq": 16,
+      "event_id": "8469ad7f-9362-419b-ba4e-a9cfa3795692",
+      "event_hash": "50e3c71b9b99b31188461de6e3166b8f5111b83015f9e75ea2a4aa6fe52c3067",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "qa-failed-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.progress",
+      "phase": null,
+      "message": "Synthetic QA failure",
+      "occurred_at": "2026-11-17T21:41:36.892Z",
+      "recorded_at": "2026-11-17T21:41:36.892Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "qa-failed-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "message": "Synthetic QA failure"
+        },
+        "event_id": "8469ad7f-9362-419b-ba4e-a9cfa3795692",
+        "occurred_at": "2026-11-17T21:41:36.892Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.progress"
+      }
+    },
+    {
+      "seq": 17,
+      "event_id": "6c4df783-0499-415a-8899-d939f5011034",
+      "event_hash": "b0714ebe33f573c73efce98adc2e8ee2f3cf4ab2baae73d79a41c87d5bc92165",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "qa-failed-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.failed",
+      "phase": null,
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.893Z",
+      "recorded_at": "2026-11-17T21:41:36.893Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "qa-failed-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "error_class": "qa-harness",
+          "exit_code": 1
+        },
+        "event_id": "6c4df783-0499-415a-8899-d939f5011034",
+        "occurred_at": "2026-11-17T21:41:36.893Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.failed"
+      }
+    },
+    {
+      "seq": 18,
+      "event_id": "f52e6150-dae6-4292-b223-3157be3e8c14",
+      "event_hash": "1ab4d4e759fc009fff47bf28e325664c2992ab711a2d806c2a929c0eaed13991",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "correction-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.started",
+      "phase": "correction",
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.895Z",
+      "recorded_at": "2026-11-17T21:41:36.896Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "correction-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "model": "synthetic-model-4",
+          "parent_attempt_id": "qa-failed-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+          "phase": "correction",
+          "provider": "synthetic-a",
+          "role": "developer"
+        },
+        "event_id": "f52e6150-dae6-4292-b223-3157be3e8c14",
+        "occurred_at": "2026-11-17T21:41:36.895Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.started"
+      }
+    },
+    {
+      "seq": 19,
+      "event_id": "de7ea780-b447-4709-9711-cd1af015bbed",
+      "event_hash": "c9e961d19fbacbf1de25c236999bd037d2e6efbfc6e087ab6646484c1154fccb",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "correction-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.succeeded",
+      "phase": null,
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.896Z",
+      "recorded_at": "2026-11-17T21:41:36.897Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "correction-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "exit_code": 0
+        },
+        "event_id": "de7ea780-b447-4709-9711-cd1af015bbed",
+        "occurred_at": "2026-11-17T21:41:36.896Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.succeeded"
+      }
+    },
+    {
+      "seq": 20,
+      "event_id": "d0dfd367-add9-46cb-a8b3-07ce12efce2e",
+      "event_hash": "fd8db4a42aefa4a12b047040956d38dc258aa79863f6a4ae2c5233f5a6b84ede",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "qa-retry-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.started",
+      "phase": "qa",
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.897Z",
+      "recorded_at": "2026-11-17T21:41:36.898Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "qa-retry-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "model": "synthetic-model-5",
+          "phase": "qa",
+          "provider": "synthetic-b",
+          "role": "qa"
+        },
+        "event_id": "d0dfd367-add9-46cb-a8b3-07ce12efce2e",
+        "occurred_at": "2026-11-17T21:41:36.897Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.started"
+      }
+    },
+    {
+      "seq": 21,
+      "event_id": "7db53317-5c22-4005-83d5-4cecc32de14e",
+      "event_hash": "b8e06b4168e4e563c39d63d5f1365557207caf96acf55850904952a498ebd4ee",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": "qa-retry-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "actor": "standalone-verification",
+      "event_type": "attempt.succeeded",
+      "phase": null,
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.899Z",
+      "recorded_at": "2026-11-17T21:41:36.899Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "attempt_id": "qa-retry-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "data": {
+          "exit_code": 0
+        },
+        "event_id": "7db53317-5c22-4005-83d5-4cecc32de14e",
+        "occurred_at": "2026-11-17T21:41:36.899Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "attempt.succeeded"
+      }
+    },
+    {
+      "seq": 22,
+      "event_id": "68f13f0f-2844-42ed-9c57-b39bbfc158a3",
+      "event_hash": "b639b5664dee371ce34b060322f846bb1ba409dc0fa7b3a5e60fe7bd2189c127",
+      "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+      "attempt_id": null,
+      "actor": "standalone-verification",
+      "event_type": "run.completed",
+      "phase": "complete",
+      "message": null,
+      "occurred_at": "2026-11-17T21:41:36.899Z",
+      "recorded_at": "2026-11-17T21:41:36.900Z",
+      "payload": {
+        "actor": "standalone-verification",
+        "data": {
+          "phase": "complete",
+          "result": "Synthetic standalone lifecycle verified"
+        },
+        "event_id": "68f13f0f-2844-42ed-9c57-b39bbfc158a3",
+        "occurred_at": "2026-11-17T21:41:36.899Z",
+        "run_id": "lifecycle-7c2dde64-9e56-45ed-a085-ed9fa93ad087",
+        "type": "run.completed"
+      }
+    }
+  ]
+}

@@ -1,0 +1,779 @@
+{
+  "tables": [
+    {
+      "name": "artifacts",
+      "sql": "CREATE TABLE artifacts (\r\n  id TEXT PRIMARY KEY,\r\n  run_id TEXT NOT NULL REFERENCES runs(id) ON DELETE RESTRICT,\r\n  attempt_id TEXT REFERENCES attempts(id) ON DELETE RESTRICT,\r\n  artifact_type TEXT NOT NULL,\r\n  storage_key TEXT NOT NULL UNIQUE,\r\n  sha256 TEXT NOT NULL,\r\n  size_bytes INTEGER NOT NULL CHECK(size_bytes>=0),\r\n  content_type TEXT NOT NULL,\r\n  encoding TEXT,\r\n  sanitized INTEGER NOT NULL CHECK(sanitized IN (0,1)),\r\n  created_at TEXT NOT NULL\r\n)"
+    },
+    {
+      "name": "attempts",
+      "sql": "CREATE TABLE attempts (\r\n  id TEXT PRIMARY KEY,\r\n  run_id TEXT NOT NULL REFERENCES runs(id) ON DELETE RESTRICT,\r\n  parent_attempt_id TEXT REFERENCES attempts(id) ON DELETE RESTRICT,\r\n  role TEXT NOT NULL,\r\n  provider TEXT,\r\n  model TEXT,\r\n  host TEXT,\r\n  phase TEXT,\r\n  status TEXT NOT NULL CHECK(status IN ('running','succeeded','failed','interrupted','timed_out','cancelled')),\r\n  exit_code INTEGER,\r\n  started_at TEXT NOT NULL,\r\n  finished_at TEXT,\r\n  last_heartbeat_at TEXT NOT NULL,\r\n  updated_at TEXT NOT NULL,\r\n  CHECK(parent_attempt_id IS NULL OR parent_attempt_id<>id)\r\n)"
+    },
+    {
+      "name": "events",
+      "sql": "CREATE TABLE events (\r\n  seq INTEGER PRIMARY KEY AUTOINCREMENT,\r\n  event_id TEXT NOT NULL UNIQUE,\r\n  event_hash TEXT NOT NULL,\r\n  run_id TEXT REFERENCES runs(id) ON DELETE RESTRICT,\r\n  attempt_id TEXT REFERENCES attempts(id) ON DELETE RESTRICT,\r\n  actor TEXT NOT NULL,\r\n  event_type TEXT NOT NULL,\r\n  phase TEXT,\r\n  message TEXT,\r\n  occurred_at TEXT,\r\n  recorded_at TEXT NOT NULL,\r\n  payload_json TEXT NOT NULL CHECK(json_valid(payload_json))\r\n)"
+    },
+    {
+      "name": "runs",
+      "sql": "CREATE TABLE runs (\r\n  id TEXT PRIMARY KEY,\r\n  work_item_id TEXT NOT NULL REFERENCES work_items(id) ON DELETE RESTRICT,\r\n  status TEXT NOT NULL CHECK(status IN ('created','running','waiting','blocked','completed','failed','cancelled')),\r\n  phase TEXT,\r\n  result TEXT,\r\n  started_at TEXT,\r\n  finished_at TEXT,\r\n  updated_at TEXT NOT NULL,\r\n  created_at TEXT NOT NULL\r\n)"
+    },
+    {
+      "name": "schema_migrations",
+      "sql": "CREATE TABLE schema_migrations (\r\n  version INTEGER PRIMARY KEY,\r\n  applied_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))\r\n)"
+    },
+    {
+      "name": "usage_samples",
+      "sql": "CREATE TABLE usage_samples (\r\n  id TEXT PRIMARY KEY,\r\n  attempt_id TEXT NOT NULL REFERENCES attempts(id) ON DELETE RESTRICT,\r\n  provider TEXT NOT NULL,\r\n  model TEXT,\r\n  input_tokens INTEGER CHECK(input_tokens IS NULL OR input_tokens>=0),\r\n  output_tokens INTEGER CHECK(output_tokens IS NULL OR output_tokens>=0),\r\n  cached_input_tokens INTEGER CHECK(cached_input_tokens IS NULL OR cached_input_tokens>=0),\r\n  cost_usd_micros INTEGER CHECK(cost_usd_micros IS NULL OR cost_usd_micros>=0),\r\n  source TEXT NOT NULL CHECK(source IN ('provider_reported','estimated','manual')),\r\n  recorded_at TEXT NOT NULL,\r\n  metadata_json TEXT CHECK(metadata_json IS NULL OR json_valid(metadata_json))\r\n)"
+    },
+    {
+      "name": "work_items",
+      "sql": "CREATE TABLE work_items (\r\n  id TEXT PRIMARY KEY,\r\n  source TEXT NOT NULL CHECK(length(source)>0),\r\n  repository TEXT NOT NULL CHECK(length(repository)>0),\r\n  external_id TEXT NOT NULL CHECK(length(external_id)>0),\r\n  title TEXT,\r\n  created_at TEXT NOT NULL,\r\n  updated_at TEXT NOT NULL,\r\n  UNIQUE(source,repository,external_id)\r\n)"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "sqlite_autoindex_work_items_1",
+      "tbl_name": "work_items",
+      "sql": null
+    },
+    {
+      "name": "sqlite_autoindex_work_items_2",
+      "tbl_name": "work_items",
+      "sql": null
+    },
+    {
+      "name": "sqlite_autoindex_runs_1",
+      "tbl_name": "runs",
+      "sql": null
+    },
+    {
+      "name": "idx_runs_work_item_created",
+      "tbl_name": "runs",
+      "sql": "CREATE INDEX idx_runs_work_item_created ON runs(work_item_id,created_at DESC)"
+    },
+    {
+      "name": "idx_runs_status_updated",
+      "tbl_name": "runs",
+      "sql": "CREATE INDEX idx_runs_status_updated ON runs(status,updated_at DESC)"
+    },
+    {
+      "name": "sqlite_autoindex_attempts_1",
+      "tbl_name": "attempts",
+      "sql": null
+    },
+    {
+      "name": "idx_attempts_run_start",
+      "tbl_name": "attempts",
+      "sql": "CREATE INDEX idx_attempts_run_start ON attempts(run_id,started_at)"
+    },
+    {
+      "name": "idx_attempts_status_heartbeat",
+      "tbl_name": "attempts",
+      "sql": "CREATE INDEX idx_attempts_status_heartbeat ON attempts(status,last_heartbeat_at)"
+    },
+    {
+      "name": "sqlite_autoindex_events_1",
+      "tbl_name": "events",
+      "sql": null
+    },
+    {
+      "name": "idx_events_run_seq",
+      "tbl_name": "events",
+      "sql": "CREATE INDEX idx_events_run_seq ON events(run_id,seq)"
+    },
+    {
+      "name": "idx_events_attempt_seq",
+      "tbl_name": "events",
+      "sql": "CREATE INDEX idx_events_attempt_seq ON events(attempt_id,seq)"
+    },
+    {
+      "name": "idx_events_type_seq",
+      "tbl_name": "events",
+      "sql": "CREATE INDEX idx_events_type_seq ON events(event_type,seq)"
+    },
+    {
+      "name": "sqlite_autoindex_artifacts_1",
+      "tbl_name": "artifacts",
+      "sql": null
+    },
+    {
+      "name": "sqlite_autoindex_artifacts_2",
+      "tbl_name": "artifacts",
+      "sql": null
+    },
+    {
+      "name": "idx_artifacts_attempt",
+      "tbl_name": "artifacts",
+      "sql": "CREATE INDEX idx_artifacts_attempt ON artifacts(attempt_id,created_at)"
+    },
+    {
+      "name": "sqlite_autoindex_usage_samples_1",
+      "tbl_name": "usage_samples",
+      "sql": null
+    },
+    {
+      "name": "idx_usage_attempt",
+      "tbl_name": "usage_samples",
+      "sql": "CREATE INDEX idx_usage_attempt ON usage_samples(attempt_id)"
+    }
+  ],
+  "triggers": [
+    {
+      "name": "events_no_update",
+      "sql": "CREATE TRIGGER events_no_update BEFORE UPDATE ON events\r\nBEGIN SELECT RAISE(ABORT,'events are immutable'); END"
+    },
+    {
+      "name": "events_no_delete",
+      "sql": "CREATE TRIGGER events_no_delete BEFORE DELETE ON events\r\nBEGIN SELECT RAISE(ABORT,'events are immutable'); END"
+    },
+    {
+      "name": "events_no_replace",
+      "sql": "CREATE TRIGGER events_no_replace BEFORE INSERT ON events\r\nWHEN EXISTS(SELECT 1 FROM events WHERE event_id=NEW.event_id OR seq=NEW.seq)\r\nBEGIN SELECT RAISE(ABORT,'events are immutable'); END"
+    }
+  ],
+  "foreign_keys": {
+    "artifacts": [
+      {
+        "id": 0,
+        "seq": 0,
+        "table": "attempts",
+        "from": "attempt_id",
+        "to": "id",
+        "on_update": "NO ACTION",
+        "on_delete": "RESTRICT",
+        "match": "NONE"
+      },
+      {
+        "id": 1,
+        "seq": 0,
+        "table": "runs",
+        "from": "run_id",
+        "to": "id",
+        "on_update": "NO ACTION",
+        "on_delete": "RESTRICT",
+        "match": "NONE"
+      }
+    ],
+    "attempts": [
+      {
+        "id": 0,
+        "seq": 0,
+        "table": "attempts",
+        "from": "parent_attempt_id",
+        "to": "id",
+        "on_update": "NO ACTION",
+        "on_delete": "RESTRICT",
+        "match": "NONE"
+      },
+      {
+        "id": 1,
+        "seq": 0,
+        "table": "runs",
+        "from": "run_id",
+        "to": "id",
+        "on_update": "NO ACTION",
+        "on_delete": "RESTRICT",
+        "match": "NONE"
+      }
+    ],
+    "events": [
+      {
+        "id": 0,
+        "seq": 0,
+        "table": "attempts",
+        "from": "attempt_id",
+        "to": "id",
+        "on_update": "NO ACTION",
+        "on_delete": "RESTRICT",
+        "match": "NONE"
+      },
+      {
+        "id": 1,
+        "seq": 0,
+        "table": "runs",
+        "from": "run_id",
+        "to": "id",
+        "on_update": "NO ACTION",
+        "on_delete": "RESTRICT",
+        "match": "NONE"
+      }
+    ],
+    "runs": [
+      {
+        "id": 0,
+        "seq": 0,
+        "table": "work_items",
+        "from": "work_item_id",
+        "to": "id",
+        "on_update": "NO ACTION",
+        "on_delete": "RESTRICT",
+        "match": "NONE"
+      }
+    ],
+    "schema_migrations": [],
+    "usage_samples": [
+      {
+        "id": 0,
+        "seq": 0,
+        "table": "attempts",
+        "from": "attempt_id",
+        "to": "id",
+        "on_update": "NO ACTION",
+        "on_delete": "RESTRICT",
+        "match": "NONE"
+      }
+    ],
+    "work_items": []
+  },
+  "columns": {
+    "artifacts": [
+      {
+        "cid": 0,
+        "name": "id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 1
+      },
+      {
+        "cid": 1,
+        "name": "run_id",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "attempt_id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "artifact_type",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "storage_key",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "sha256",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "size_bytes",
+        "type": "INTEGER",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "content_type",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "encoding",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 9,
+        "name": "sanitized",
+        "type": "INTEGER",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 10,
+        "name": "created_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      }
+    ],
+    "attempts": [
+      {
+        "cid": 0,
+        "name": "id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 1
+      },
+      {
+        "cid": 1,
+        "name": "run_id",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "parent_attempt_id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "role",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "provider",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "model",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "host",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "phase",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "status",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 9,
+        "name": "exit_code",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 10,
+        "name": "started_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 11,
+        "name": "finished_at",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 12,
+        "name": "last_heartbeat_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 13,
+        "name": "updated_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      }
+    ],
+    "events": [
+      {
+        "cid": 0,
+        "name": "seq",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 1
+      },
+      {
+        "cid": 1,
+        "name": "event_id",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "event_hash",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "run_id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "attempt_id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "actor",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "event_type",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "phase",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "message",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 9,
+        "name": "occurred_at",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 10,
+        "name": "recorded_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 11,
+        "name": "payload_json",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      }
+    ],
+    "runs": [
+      {
+        "cid": 0,
+        "name": "id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 1
+      },
+      {
+        "cid": 1,
+        "name": "work_item_id",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "status",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "phase",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "result",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "started_at",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "finished_at",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "updated_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "created_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      }
+    ],
+    "schema_migrations": [
+      {
+        "cid": 0,
+        "name": "version",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 1
+      },
+      {
+        "cid": 1,
+        "name": "applied_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": "strftime('%Y-%m-%dT%H:%M:%fZ','now')",
+        "pk": 0
+      }
+    ],
+    "usage_samples": [
+      {
+        "cid": 0,
+        "name": "id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 1
+      },
+      {
+        "cid": 1,
+        "name": "attempt_id",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "provider",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "model",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "input_tokens",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "output_tokens",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "cached_input_tokens",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "cost_usd_micros",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "source",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 9,
+        "name": "recorded_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 10,
+        "name": "metadata_json",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      }
+    ],
+    "work_items": [
+      {
+        "cid": 0,
+        "name": "id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 1
+      },
+      {
+        "cid": 1,
+        "name": "source",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "repository",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "external_id",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "title",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "created_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "updated_at",
+        "type": "TEXT",
+        "notnull": 1,
+        "dflt_value": null,
+        "pk": 0
+      }
+    ]
+  },
+  "journal_mode": [
+    {
+      "journal_mode": "wal"
+    }
+  ],
+  "sqlite_version": {
+    "version": "3.49.2"
+  }
+}

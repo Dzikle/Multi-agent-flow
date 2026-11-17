@@ -1,0 +1,267 @@
+{
+  "verified_at": "2026-11-17T21:21:11.363Z",
+  "browser": "157.0.8103.79",
+  "node": "v22.23.5",
+  "viewport": {
+    "desktop": "1440x1000",
+    "mobile": "390x844"
+  },
+  "synthetic_data_only": true,
+  "results": [
+    {
+      "name": "desktop rejects invalid authentication",
+      "passed": true
+    },
+    {
+      "name": "desktop active and completed run status, phase and specialist",
+      "passed": true
+    },
+    {
+      "name": "completed run exposes failed attempt and successful retry",
+      "passed": true
+    },
+    {
+      "name": "selected run shows ordered failed QA and retry events",
+      "passed": false,
+      "error": "Selected run must include an events array"
+    },
+    {
+      "name": "manual refresh updates selected run detail",
+      "passed": true
+    },
+    {
+      "name": "manual refresh updates selected event history",
+      "passed": false,
+      "error": "Refreshed run must include events"
+    },
+    {
+      "name": "automatic polling updates selected run phase",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'Synthetic polling checkpoint'\n"
+    },
+    {
+      "name": "API failure reports unavailable and successful refresh recovers",
+      "passed": true
+    },
+    {
+      "name": "switching to invalid token clears authenticated data",
+      "passed": true
+    },
+    {
+      "name": "read token remains only in page memory",
+      "passed": true
+    },
+    {
+      "name": "mobile rejects invalid authentication",
+      "passed": true
+    },
+    {
+      "name": "mobile shows completed attempt history and active run",
+      "passed": true
+    },
+    {
+      "name": "mobile page fits viewport without document overflow",
+      "passed": true
+    },
+    {
+      "name": "mobile table can scroll to specialist and update columns",
+      "passed": true
+    },
+    {
+      "name": "mobile manual refresh updates selected run phase",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'Synthetic mobile checkpoint'\n"
+    },
+    {
+      "name": "mobile API outage displays feedback and refresh recovers",
+      "passed": true
+    },
+    {
+      "name": "event history is bounded with an explicit continuation cursor",
+      "passed": false,
+      "error": "page.waitForFunction: Timeout 10000ms exceeded."
+    },
+    {
+      "name": "dashboard exposes only read controls and uses only read API requests",
+      "passed": true
+    },
+    {
+      "name": "no unhandled browser JavaScript errors",
+      "passed": true
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-completed-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-active-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-active-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-active-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-active-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-completed-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-active-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-active-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-active-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-active-run"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents/active"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/runs/browser-active-run"
+    }
+  ]
+}
