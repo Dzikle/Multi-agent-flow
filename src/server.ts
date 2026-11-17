@@ -27,8 +27,11 @@ export function buildApp(config: LedgerConfig) {
     if (!header?.startsWith(prefix)) throw new LedgerError("UNAUTHORIZED","Missing bearer token",401);
     const token=header.slice(prefix.length);
     if (constantTimeEqual(token,config.dispatcherToken)) return;
-    if (!write && !artifactRead && constantTimeEqual(token,config.readToken)) return;
-    throw new LedgerError("FORBIDDEN","Insufficient permissions",403);
+    if (constantTimeEqual(token,config.readToken)) {
+      if (!write && !artifactRead) return;
+      throw new LedgerError("FORBIDDEN","Insufficient permissions",403);
+    }
+    throw new LedgerError("UNAUTHORIZED","Invalid bearer token",401);
   }
   app.setErrorHandler((err,req,reply)=>{
     if (err instanceof LedgerError) {
@@ -36,7 +39,7 @@ export function buildApp(config: LedgerConfig) {
     }
     if (err instanceof ZodError) return reply.code(400).send({error:{code:"VALIDATION",message:err.issues.map(x=>x.path.join(".")+": "+x.message).join("; ")}});
     if ((err as {statusCode?:number}).statusCode === 413) return reply.code(413).send({error:{code:"PAYLOAD_TOO_LARGE",message:"Payload exceeded configured limit"}});
-    req.log.error({error:err.message},"Internal ledger error");
+    req.log.error({error:err instanceof Error ? err.message : String(err)},"Internal ledger error");
     return reply.code(500).send({error:{code:"INTERNAL",message:"Internal server error"}});
   });
 
