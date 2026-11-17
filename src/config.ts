@@ -1,0 +1,33 @@
+import { mkdirSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+
+export interface LedgerConfig {
+  dbPath: string;
+  artifactDir: string;
+  dispatcherToken: string;
+  readToken: string;
+  port: number;
+  host: string;
+  heartbeatTtlMs: number;
+  maxArtifactBytes: number;
+}
+
+export function loadConfig(env: NodeJS.ProcessEnv = process.env): LedgerConfig {
+  const dispatcherToken = env.LEDGER_DISPATCHER_TOKEN || "";
+  const readToken = env.LEDGER_READ_TOKEN || "";
+  if (dispatcherToken.length < 16 || readToken.length < 16) {
+    throw new Error("LEDGER_DISPATCHER_TOKEN and LEDGER_READ_TOKEN must each be at least 16 characters");
+  }
+  if (dispatcherToken === readToken) throw new Error("Use separate dispatcher and read tokens");
+  const dbPath = resolve(env.LEDGER_DB_PATH || "./data/ledger.db");
+  const artifactDir = resolve(env.LEDGER_ARTIFACT_DIR || "./data/artifacts");
+  mkdirSync(dirname(dbPath), { recursive: true });
+  mkdirSync(artifactDir, { recursive: true });
+  return {
+    dbPath, artifactDir, dispatcherToken, readToken,
+    port: Number(env.PORT || 4177),
+    host: env.HOST || "127.0.0.1",
+    heartbeatTtlMs: Number(env.LEDGER_HEARTBEAT_TTL_MS || 120000),
+    maxArtifactBytes: Number(env.LEDGER_MAX_ARTIFACT_BYTES || 10485760)
+  };
+}
