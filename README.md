@@ -17,9 +17,22 @@ A small standalone, provider-neutral service for **observing agent executions**,
 - [HTTP API](docs/api.md)
 - [Integration plan](docs/integration.md)
 - [Verification plan](docs/verification.md)
+- [Local build, smoke requests and PowerShell guide](docs/quickstart.md)
 
 ## Proposed stack
 TypeScript, Node.js LTS, Fastify, Zod, better-sqlite3, SQLite WAL, parameterized SQL (no ORM), gzip-compressed JSONL artifacts, a plain read-only HTML/JS status page.
+
+## Build and run
+
+On branch feat/execution-ledger-v1, install Node.js 22+, then run:
+
+~~~bash
+npm install
+npm run build
+npm test
+~~~
+
+Set unique LEDGER_DISPATCHER_TOKEN and LEDGER_READ_TOKEN environment variables (at least 16 characters, different values), then start with npm run dev. In another terminal set LEDGER_URL and LEDGER_TOKEN to your running endpoint and dispatcher token, then run npm run smoke. See docs/quickstart.md for exact Linux and PowerShell commands.
 
 ## Delivery phases
 1. Freeze design and testable contracts.
