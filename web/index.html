@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Execution Ledger</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif}body{margin:0;background:#121517;color:#f1f3f4}main{max-width:1150px;margin:auto;padding:24px}h1{font-size:1.55rem;margin-bottom:0}p,small{color:#abb6bc}label{display:flex;align-items:center;gap:8px;flex-wrap:wrap}input,button{padding:9px;border-radius:6px;border:1px solid #414b50;background:#22292d;color:#fff}button{cursor:pointer}table{width:100%;border-collapse:collapse;margin-top:18px}td,th{padding:12px 9px;border-bottom:1px solid #323b40;text-align:left;font-size:.93rem}th{color:#abb6bc}tr{cursor:pointer}tr:hover{background:#212a2f}.pill{border:1px solid #5e6b70;border-radius:10px;padding:3px 7px;font-size:.8rem}.running{color:#8bc7ff}.completed{color:#7ed4a7}.blocked,.failed{color:#ff9999}.subtle{color:#aab8bd;font-size:.81rem}.detail{white-space:pre-wrap;overflow-wrap:anywhere;background:#1b2125;border:1px solid #38434a;border-radius:8px;padding:15px;max-height:420px;overflow:auto}#notice{min-height:22px}section{margin-top:18px}@media(max-width:640px){main{padding:12px}td,th{padding:8px 4px;font-size:.8rem}}
+</style></head><body><main>
+<h1>Execution Ledger</h1>
+<p>Read-only execution status · task authority remains in GitHub and dispatcher</p>
+<label>Read token <input id="token" type="password" autocomplete="off" placeholder="LEDGER_READ_TOKEN">
+<button id="connect">Connect</button> <button id="refresh">Refresh</button></label>
+<p id="notice">Enter a read token to load status. The token stays in this page's memory.</p>
+<section><h2>Runs</h2><table><thead><tr><th>Work item</th><th>Run</th><th>Status</th><th>Phase</th><th>Active specialist</th><th>Last update</th></tr></thead><tbody id="rows"></tbody></table></section>
+<section><h2>Selected run</h2><pre class="detail" id="detail">Select a run.</pre></section>
+</main><script>
+"use strict";
+let key="",inflight=false;
+const el=id=>document.getElementById(id);
+async function api(path){
+ const r=await fetch(path,{headers:{Authorization:"Bearer "+key},cache:"no-store"});
+ const d=await r.json();if(!r.ok)throw new Error(d.error?.message||"HTTP "+r.status);return d;
+}
+function cell(tr,value,cls){
+ const td=document.createElement("td");td.textContent=value??"—";if(cls)td.className=cls;tr.append(td);
+}
+function time(v){return v?new Date(v).toLocaleString():"—"}
+async function refresh(){
+ if(!key||inflight)return;inflight=true;
+ try{
+ const [runs,agents]=await Promise.all([api("/v1/runs?limit=100"),api("/v1/agents/active")]);
+ el("rows").replaceChildren();
+ for(const r of runs.runs){
+  const tr=document.createElement("tr"),a=agents.attempts.filter(x=>x.run_id===r.id);
+  cell(tr,r.repository+"#"+r.external_id);
+  cell(tr,r.id);cell(tr,r.status,r.status);cell(tr,r.phase);
+  cell(tr,a.map(x=>x.role+(x.model?" · "+x.model:"")+(x.suspected_stale?" (stale?)":"")).join(", ")||"—");
+  cell(tr,time(r.updated_at),"subtle");
+  tr.addEventListener("click",async()=>{try{el("detail").textContent=JSON.stringify(await api("/v1/runs/"+encodeURIComponent(r.id)),null,2)}catch(e){el("detail").textContent=String(e)}});
+  el("rows").append(tr);
+ }
+ el("notice").textContent=runs.runs.length+" runs · "+agents.attempts.length+" active attempts · last refreshed "+new Date().toLocaleTimeString();
+ }catch(e){el("notice").textContent=String(e)}finally{inflight=false}
+}
+el("connect").addEventListener("click",()=>{key=el("token").value;el("token").value="";refresh()});
+el("refresh").addEventListener("click",refresh);
+setInterval(refresh,8000);
+</script></body></html>
