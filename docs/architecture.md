@@ -45,8 +45,8 @@ If the network fails, write events into a local durable spool; retry with unchan
 ## Security, privacy and operations
 
 - Private Tailscale-first deployment, TLS for external exposure.
-- Separate read / read-artifacts / specialist / dispatcher credentials. Bearer tokens supplied through environment/secrets; never put credentials into prompts, logs, query params or repo.
-- Redact sensitive content before transfer; avoid hidden reasoning, raw secrets, personal data. Limit event size, artifact size and upload concurrency. Use server-chosen artifact paths.
+- v1 uses separate read and dispatcher credentials (dispatcher also downloads artifacts). Per-attempt specialist credentials are a future enhancement. Bearer tokens supplied through environment/secrets; never put credentials into prompts, logs, query params or repo.
+- Redact sensitive content before transfer; v1 trusts an explicit sanitized declaration but does not yet independently redact the artifact. Avoid hidden reasoning, raw secrets, personal data. Limit event size, artifact size and upload concurrency. Use server-chosen artifact paths.
 - WAL backup via supported SQLite backup API or VACUUM INTO; back up artifact files alongside DB; configurable retention and health checks.
 - Correlate errors using sanitized type codes; distinguish qa-harness from code, infra, quota and model errors.
 - Event history append-only; projections can be audited and rebuilt from events in a future maintenance tool.
