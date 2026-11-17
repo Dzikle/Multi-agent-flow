@@ -45,7 +45,7 @@ Only dispatcher identity may create/close/resume runs or start/terminally settle
 
 ## POST /v1/artifacts
 
-Binary POST with headers X-Artifact-Id, X-Run-Id, optional X-Attempt-Id, X-Artifact-Type, X-SHA256, and Content-Type, optional Content-Encoding: gzip. Server streams to temp under its storage root, verifies digest, applies size limit (initially 10 MiB per chunk), atomically stores and records artifact in one DB transaction plus artifact.attached event. On failure remove temp; repeat ID with same SHA returns existing metadata; changed SHA returns 409. Never accept user-supplied destination filename/path. Require explicit sanitized=true assertion and server-side redaction policy.
+Binary POST with headers X-Artifact-Id, X-Run-Id, optional X-Attempt-Id, X-Artifact-Type, X-SHA256, and Content-Type, optional Content-Encoding: gzip. Server streams to temp under its storage root, verifies digest, applies size limit (initially 10 MiB per chunk), then stores the file and artifact metadata plus artifact.attached event. Client asserts sanitized=true; v1 does NOT yet independently redact text. On failure remove temp; repeat ID with same SHA returns existing metadata; changed SHA returns 409. Never accept user-supplied destination filename/path. Require explicit sanitized=true assertion and server-side redaction policy.
 
 ## POST /v1/usage
 
@@ -60,7 +60,7 @@ Tokens/cost are NULL when unavailable, not zero. Source is provider_reported, es
 - GET /health : process/database health (unauthenticated, minimal information)
 - GET /v1/runs?status=running&limit=50 : newest first, includes phase, updated_at, active attempts, derived suspected_stale
 - GET /v1/runs/:runId : run + attempts + latest event + artifact metadata
-- GET /v1/issues/:source/:repo/:externalId/runs : work item execution history (URL-encode path components; safer query form may be added)
+- GET /v1/issues?source=github&repository=Dzikle%2FLicitacija&external_id=139 : work item execution history
 - GET /v1/attempts/:attemptId : status and history
 - GET /v1/events?run_id=...&after_seq=0&limit=100 : ordered immutable events, cursor by seq
 - GET /v1/agents/active : running attempts, heartbeat age, suspected_stale
@@ -74,7 +74,7 @@ Read endpoints must use fixed prepared SQL, bounded pagination, correct access s
 
 - read: status metadata, no transcripts
 - read-artifacts: evidence bytes
-- specialist: only its own attempt's progress and heartbeat
+- specialist: reserved for a future attempt-scoped credential; v1 requires a trusted wrapper to submit via dispatcher credential
 - dispatcher: run/attempt lifecycle events
 - admin: migration/retention/backup operations
 
