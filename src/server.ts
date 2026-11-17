@@ -51,6 +51,7 @@ export function buildApp(config: LedgerConfig) {
   app.post("/v1/events",async(req,reply)=>{
     authenticate(req.headers.authorization,true);
     const event=eventSchema.parse(req.body);
+    if (Buffer.byteLength(JSON.stringify(event),"utf8") > 65536) throw new LedgerError("PAYLOAD_TOO_LARGE","Event exceeds 64 KiB",413);
     const ack=store.recordEvent(event);
     return reply.code(ack.duplicate?200:201).send(ack);
   });
